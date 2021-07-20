@@ -30,21 +30,21 @@ constexpr double PI = 3.141592653589793238462643383279502884197169399375105;
 // RGBA //
 //      //
 
-inline RGBA::RGBA()
+RGBA::RGBA()
     : R(0)
     , G(0)
     , B(0)
     , A(255)
 {}
 
-inline RGBA::RGBA(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+RGBA::RGBA(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
     : R(r)
     , G(g)
     , B(b)
     , A(a)
 {}
 
-inline bool RGBA::operator==(RGBA rgba)
+bool RGBA::operator==(RGBA rgba)
 {
     return R == rgba.R &&
            G == rgba.G &&
@@ -52,12 +52,12 @@ inline bool RGBA::operator==(RGBA rgba)
            A == rgba.A;
 }
 
-inline bool RGBA::operator!=(RGBA rgba)
+bool RGBA::operator!=(RGBA rgba)
 {
     return !((*this) == rgba);
 }
 
-inline int RGBA::diff(RGBA compare) const
+int RGBA::diff(RGBA compare) const
 {
     int sum = 0;
     sum += std::abs((int)R - (int)compare.R);
@@ -66,7 +66,7 @@ inline int RGBA::diff(RGBA compare) const
     return sum;
 }
 
-inline double RGBA::brightness() const
+double RGBA::brightness() const
 {
     return ((double)R + (double)G + (double)B) / (765.0) * ((double)A / 255.0);
 }
@@ -75,7 +75,7 @@ inline double RGBA::brightness() const
 // Image //
 //       //
 
-inline Image::Image(const Image& img)
+Image::Image(const Image& img)
     : Image(img.width, img.height)
 {
     LOOP_IMAGE
@@ -84,15 +84,15 @@ inline Image::Image(const Image& img)
     }
 }
 
-inline Image::Image(Image&& img)
+Image::Image(Image&& img)
     : data(img.data)
 {
     img.data = nullptr;
-    img.width = -1;
-    img.height = -1;
+    img.width = 0;
+    img.height = 0;
 }
 
-inline Image::Image(std::string path)
+Image::Image(std::string path)
 {
     int channels = 0;
     stbi_set_flip_vertically_on_load(true);
@@ -129,7 +129,7 @@ inline Image::Image(std::string path)
     STBI_FREE((void*)stb_data);
 }
 
-inline Image::Image(int width, int height)
+Image::Image(int width, int height)
     : width(width)
     , height(height)
 {
@@ -141,12 +141,12 @@ inline Image::Image(int width, int height)
     }
 }
 
-inline Image::~Image()
+Image::~Image()
 {
     freeData();
 }
 
-inline Image& Image::operator=(const Image& img)
+Image& Image::operator=(const Image& img)
 {
     if (width != img.width || height != img.height)
     {
@@ -162,7 +162,7 @@ inline Image& Image::operator=(const Image& img)
     return *this;
 }
 
-inline Image& Image::operator=(Image&& img)
+Image& Image::operator=(Image&& img)
 {
     freeData();
     data = img.data;
@@ -170,31 +170,31 @@ inline Image& Image::operator=(Image&& img)
     height = img.height;
 
     img.data = nullptr;
-    img.width = -1;
-    img.height = -1;
+    img.width = 0;
+    img.height = 0;
 
     return *this;
 }
 
-inline int Image::getWidth()  const noexcept { return width; }
-inline int Image::getHeight() const noexcept { return height; }
+int Image::getWidth()  const noexcept { return width; }
+int Image::getHeight() const noexcept { return height; }
 
-inline bool Image::containsCoord(int x, int y) const noexcept
+bool Image::containsCoord(int x, int y) const noexcept
 {
     return x >= 0 && y >= 0 && x < width && y < height;
 }
 
-inline RGBA* Image::operator[] (int x) noexcept
+RGBA* Image::operator[] (int x) noexcept
 {
     return data[x];
 }
 
-inline const RGBA* Image::operator[](int x) const noexcept
+const RGBA* Image::operator[](int x) const noexcept
 {
     return data[x];
 }
 
-inline RGBA& Image::at_safe(int x, int y) noexcept
+RGBA& Image::at_safe(int x, int y) noexcept
 {
     x = std::min(std::max(x, 0), width-1);
     y = std::min(std::max(y, 0), height-1);
@@ -202,7 +202,7 @@ inline RGBA& Image::at_safe(int x, int y) noexcept
     return data[x][y];
 }
 
-inline const RGBA& Image::at_safe(int x, int y) const noexcept
+const RGBA& Image::at_safe(int x, int y) const noexcept
 {
     x = std::min(std::max(x, 0), width-1);
     y = std::min(std::max(y, 0), height-1);
@@ -210,7 +210,7 @@ inline const RGBA& Image::at_safe(int x, int y) const noexcept
     return data[x][y];
 }
 
-inline RGBA& Image::at(int x, int y)
+RGBA& Image::at(int x, int y)
 {
     if (containsCoord(x, y))
         return data[x][y];
@@ -218,7 +218,7 @@ inline RGBA& Image::at(int x, int y)
         throw std::runtime_error("Out of bounds Image access!");
 }
 
-inline const RGBA& Image::at(int x, int y) const
+const RGBA& Image::at(int x, int y) const
 {
     if (containsCoord(x, y))
         return data[x][y];
@@ -226,7 +226,7 @@ inline const RGBA& Image::at(int x, int y) const
         throw std::runtime_error("Out of bounds Image access!");
 }
 
-inline void Image::fillColor(int x1, int y1, int x2, int y2, RGBA color) noexcept
+void Image::fillColor(int x1, int y1, int x2, int y2, RGBA color) noexcept
 {
     int xStep = ((x2 - x1) > 0) - ((x2 - x1) < 0);
     int yStep = ((y2 - y1) > 0) - ((y2 - y1) < 0);
@@ -244,7 +244,7 @@ inline void Image::fillColor(int x1, int y1, int x2, int y2, RGBA color) noexcep
     }
 }
 
-inline void Image::makeTransparent(bool(*condition)(const RGBA& rgba))
+void Image::makeTransparent(bool(*condition)(const RGBA& rgba))
 {
     LOOP_IMAGE
     {
@@ -256,7 +256,7 @@ inline void Image::makeTransparent(bool(*condition)(const RGBA& rgba))
     }
 }
 
-inline void Image::setAlpha(unsigned char a)
+void Image::setAlpha(unsigned char a)
 {
     LOOP_IMAGE
     {
@@ -264,7 +264,7 @@ inline void Image::setAlpha(unsigned char a)
     }
 }
 
-inline void Image::save(std::string path, filetype type)
+void Image::save(std::string path, filetype type)
 {
     unsigned int rawDataSize = width * height * sizeof(char) * CHANNELS;
     unsigned char* rawData = new unsigned char[rawDataSize];
@@ -300,7 +300,7 @@ inline void Image::save(std::string path, filetype type)
     std::cout << "Image written to " << path << "\n";
 }
 
-inline void Image::freeData()
+void Image::freeData()
 {
     if (data)
     {
