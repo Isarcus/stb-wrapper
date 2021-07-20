@@ -62,6 +62,13 @@ private:
     int width, height;
     RGBA** data;
 
+    // Invariants:
+    // -> data always points to a valid 2D 'rectangular' array of initialized RGBA values
+    // -> width and height are always >= 0
+    //
+    // These will be violated if and only if an Image has been used as an rvalue reference
+    // in another Image's constructor or assignment operator
+
     static const int CHANNELS = 4;
 
     void freeData();

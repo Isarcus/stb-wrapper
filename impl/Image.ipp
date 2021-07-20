@@ -83,8 +83,8 @@ Image::Image(std::string path)
 }
 
 Image::Image(int width, int height)
-    : width(width)
-    , height(height)
+    : width(std::max(1, width))
+    , height(std::max(1, height))
 {
     data = new RGBA*[width];
 
@@ -267,6 +267,8 @@ void Image::freeData()
             delete[] data[x];
         }
         delete[] data;
+
+        data = nullptr;
     }
 }
 
