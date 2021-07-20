@@ -48,9 +48,11 @@ public:
     const RGBA& at_safe(int x, int y) const noexcept;
     RGBA& at(int x, int y);
     const RGBA& at(int x, int y) const;
+    RGBA sample(double x, double y, math::EaseCurveRGBA sampler=math::interpBezier5) const;
 
     // Modifiers //
 
+    void resize(int newWidth, int newHeight);
     void fillColor(int x1, int y1, int x2, int y2, RGBA color) noexcept;
     void makeTransparent(bool(*condition)(const RGBA& rgba));
     void setAlpha(unsigned char a);

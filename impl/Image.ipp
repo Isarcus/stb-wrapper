@@ -184,6 +184,54 @@ const RGBA& Image::at(int x, int y) const
         throw std::runtime_error("Out of bounds Image access!");
 }
 
+RGBA Image::sample(double x, double y, math::EaseCurveRGBA sampler) const
+{
+    if (!containsCoord(x, y))
+    {
+        throw std::runtime_error("Out of bounds Image access!");
+    }
+
+    int x_0 = x;
+    int y_0 = y;
+    int x_1 = std::min(x_0+1, width - 1);
+    int y_1 = std::min(y_0+1, height - 1);
+
+    const RGBA& c00 = data[x_0][y_0];
+    const RGBA& c01 = data[x_0][y_1];
+    const RGBA& c10 = data[x_1][y_0];
+    const RGBA& c11 = data[x_1][y_1];
+
+    double x_itl = x - x_0;
+    double y_itl = y - y_0;
+
+    // blur together
+    RGBA c_y0 = sampler(c00, c10, x_itl);
+    RGBA c_y1 = sampler(c01, c11, x_itl);
+    return sampler(c_y0, c_y1, y_itl);
+}
+
+void Image::resize(int newWidth, int newHeight)
+{
+    if (newWidth < 1 || newHeight < 1)
+    {
+        throw std::runtime_error("Can't create an image with zero or negative dimensions!");
+    }
+
+    const double scaleX = (newWidth > 1) ? (double)(width - 1) / (double)(newWidth - 1) : 0;
+    const double scaleY = (newHeight > 1) ? (double)(height - 1) / (double)(newHeight - 1) : 0;
+
+    Image img_new(newWidth, newHeight);
+    for (int x = 0; x < newWidth; x++)
+    {
+        for (int y = 0; y < newHeight; y++)
+        {
+            img_new.data[x][y] = sample(x*scaleX, y*scaleY);
+        }
+    }
+
+    *this = img_new;
+}
+
 void Image::fillColor(int x1, int y1, int x2, int y2, RGBA color) noexcept
 {
     int xStep = ((x2 - x1) > 0) - ((x2 - x1) < 0);
