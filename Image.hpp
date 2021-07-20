@@ -10,6 +10,9 @@
 
 #include <string>
 
+#include "image_math.hpp"
+#include "RGBA.hpp"
+
 namespace zimg
 {
 
@@ -18,20 +21,6 @@ enum class filetype
     PNG,
     JPG,
 };
-
-typedef struct RGBA {
-    RGBA();
-    RGBA(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255);
-
-    int diff(RGBA compare) const;
-    double brightness() const; // scale of 0 to 1
-
-    bool operator==(RGBA rgba);
-    bool operator!=(RGBA rgba);
-
-    unsigned char R, G, B, A;
-} RGBA;
-
 
 class Image {
 public:
@@ -49,6 +38,7 @@ public:
     int getWidth() const noexcept;
     int getHeight() const noexcept;
     bool containsCoord(int x, int y) const noexcept;
+    bool containsCoord(double x, double y) const noexcept;
     
     // Accessors //
 
@@ -80,7 +70,7 @@ private:
 } // namespace zimg
 
 #ifdef ISARCUS_IMAGE_IMPLEMENTATION
-#include "impl/image_impl.hpp"
+#include "impl/Image.ipp"
 #endif
 
 #endif // ifndef ISARCUS_IMAGE_HPP

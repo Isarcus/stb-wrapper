@@ -6,8 +6,10 @@
 */
 
 #ifndef ISARCUS_IMAGE_HPP
-#include "../image.hpp"
+#include "../Image.hpp"
 #endif
+
+#include "../image_math.hpp"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb/stb_image_write.h"
@@ -25,55 +27,6 @@ namespace zimg
 {
 
 constexpr double PI = 3.141592653589793238462643383279502884197169399375105;
-
-//      //
-// RGBA //
-//      //
-
-RGBA::RGBA()
-    : R(0)
-    , G(0)
-    , B(0)
-    , A(255)
-{}
-
-RGBA::RGBA(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
-    : R(r)
-    , G(g)
-    , B(b)
-    , A(a)
-{}
-
-bool RGBA::operator==(RGBA rgba)
-{
-    return R == rgba.R &&
-           G == rgba.G &&
-           B == rgba.B &&
-           A == rgba.A;
-}
-
-bool RGBA::operator!=(RGBA rgba)
-{
-    return !((*this) == rgba);
-}
-
-int RGBA::diff(RGBA compare) const
-{
-    int sum = 0;
-    sum += std::abs((int)R - (int)compare.R);
-    sum += std::abs((int)G - (int)compare.G);
-    sum += std::abs((int)B - (int)compare.B);
-    return sum;
-}
-
-double RGBA::brightness() const
-{
-    return ((double)R + (double)G + (double)B) / (765.0) * ((double)A / 255.0);
-}
-
-//       //
-// Image //
-//       //
 
 Image::Image(const Image& img)
     : Image(img.width, img.height)
@@ -180,6 +133,11 @@ int Image::getWidth()  const noexcept { return width; }
 int Image::getHeight() const noexcept { return height; }
 
 bool Image::containsCoord(int x, int y) const noexcept
+{
+    return x >= 0 && y >= 0 && x < width && y < height;
+}
+
+bool Image::containsCoord(double x, double y) const noexcept
 {
     return x >= 0 && y >= 0 && x < width && y < height;
 }
