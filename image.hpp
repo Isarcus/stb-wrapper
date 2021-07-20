@@ -8,13 +8,9 @@
 #ifndef ISARCUS_IMAGE_HPP
 #define ISARCUS_IMAGE_HPP
 
-#ifndef ISARCUS_IMAGE_NAMESPACE
-#define ISARCUS_IMAGE_NAMESPACE zimg
-#endif
-
 #include <string>
 
-namespace ISARCUS_IMAGE_NAMESPACE
+namespace zimg
 {
 
 enum class filetype
@@ -81,7 +77,7 @@ private:
     void freeData();
 };
 
-} // namespace ISARCUS_IMAGE_NAMESPACE
+} // namespace zimg
 
 #ifdef ISARCUS_IMAGE_IMPLEMENTATION
 #include "impl/image_impl.hpp"

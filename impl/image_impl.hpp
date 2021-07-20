@@ -21,7 +21,7 @@
 
 #define LOOP_IMAGE for (int x = 0; x < width; x++) for (int y = 0; y < height; y++)
 
-namespace ISARCUS_IMAGE_NAMESPACE
+namespace zimg
 {
 
 constexpr double PI = 3.141592653589793238462643383279502884197169399375105;
@@ -316,4 +316,4 @@ void Image::freeData()
 #undef STB_IMAGE_WRITE_IMPLEMENTATION
 #undef LOOP_IMAGE
 
-} // namespace ISARCUS_IMAGE_NAMESPACE
+} // namespace zimg
