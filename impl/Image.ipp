@@ -192,18 +192,21 @@ RGBA Image::sample(double x, double y, math::EaseCurveRGBA sampler) const
         throw std::runtime_error("Out of bounds Image access!");
     }
 
-    int x_0 = x;
-    int y_0 = y;
+    constexpr double adj = 0.4714045;
+
+    int x_0 = std::floor(std::max(0.0, x - adj));
+    int y_0 = std::floor(std::max(0.0, y - adj));
     int x_1 = std::min(x_0+1, width - 1);
     int y_1 = std::min(y_0+1, height - 1);
+    std::cout << "(" << x_0 << ", " << y_0 << ")  (" << x_1 << ", " << y_1 << ")\n";
 
     const RGBA& c00 = data[x_0][y_0];
     const RGBA& c01 = data[x_0][y_1];
     const RGBA& c10 = data[x_1][y_0];
     const RGBA& c11 = data[x_1][y_1];
 
-    double x_itl = x - x_0;
-    double y_itl = y - y_0;
+    double x_itl = std::max(0.0, x - adj - x_0);
+    double y_itl = std::max(0.0, y - adj - y_0);
 
     // blur together
     RGBA c_y0 = sampler(c00, c10, x_itl);
@@ -211,22 +214,25 @@ RGBA Image::sample(double x, double y, math::EaseCurveRGBA sampler) const
     return sampler(c_y0, c_y1, y_itl);
 }
 
-void Image::resize(int newWidth, int newHeight)
+void Image::resize(int newWidth, int newHeight, math::EaseCurveRGBA sampler)
 {
     if (newWidth < 1 || newHeight < 1)
     {
         throw std::runtime_error("Can't create an image with zero or negative dimensions!");
     }
 
-    const double scaleX = (newWidth > 1) ? (double)(width - 1) / (double)(newWidth - 1) : 0;
-    const double scaleY = (newHeight > 1) ? (double)(height - 1) / (double)(newHeight - 1) : 0;
+    const double scaleX = (newWidth > 1) ? (double)(width) / (double)(newWidth) : 0;
+    const double scaleY = (newHeight > 1) ? (double)(height) / (double)(newHeight) : 0;
 
     Image img_new(newWidth, newHeight);
     for (int x = 0; x < newWidth; x++)
     {
         for (int y = 0; y < newHeight; y++)
         {
-            img_new.data[x][y] = sample(x*scaleX, y*scaleY);
+            if (sampler)
+                img_new.data[x][y] = sample(x*scaleX, y*scaleY, sampler);
+            else
+                img_new.data[x][y] = at(x*scaleX, y*scaleY);
         }
     }
 
