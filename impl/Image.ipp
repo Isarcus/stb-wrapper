@@ -38,7 +38,9 @@ Image::Image(const Image& img)
 }
 
 Image::Image(Image&& img)
-    : data(img.data)
+    : width(img.width)
+    , height(img.height)
+    , data(img.data)
 {
     img.data = nullptr;
     img.width = 0;
@@ -103,7 +105,6 @@ Image& Image::operator=(const Image& img)
 {
     if (width != img.width || height != img.height)
     {
-        freeData();
         *this = Image(img.width, img.height);
     }
 
