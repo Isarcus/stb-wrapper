@@ -198,7 +198,6 @@ RGBA Image::sample(double x, double y, math::EaseCurveRGBA sampler) const
     int y_0 = std::floor(std::max(0.0, y - adj));
     int x_1 = std::min(x_0+1, width - 1);
     int y_1 = std::min(y_0+1, height - 1);
-    std::cout << "(" << x_0 << ", " << y_0 << ")  (" << x_1 << ", " << y_1 << ")\n";
 
     const RGBA& c00 = data[x_0][y_0];
     const RGBA& c01 = data[x_0][y_1];
