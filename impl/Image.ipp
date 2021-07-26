@@ -270,7 +270,7 @@ void Image::setAlpha(unsigned char a)
     }
 }
 
-void Image::save(std::string path, filetype type)
+bool Image::save(std::string path, filetype type)
 {
     unsigned int rawDataSize = width * height * sizeof(char) * CHANNELS;
     unsigned char* rawData = new unsigned char[rawDataSize];
@@ -289,13 +289,14 @@ void Image::save(std::string path, filetype type)
         }
     }
 
+    int result = 0;
     switch (type)
     {
     case filetype::PNG:
-        stbi_write_png(path.c_str(), width, height, CHANNELS, rawData, width*CHANNELS);
+        result = stbi_write_png(path.c_str(), width, height, CHANNELS, rawData, width*CHANNELS);
         break;
     case filetype::JPG:
-        stbi_write_jpg(path.c_str(), width, height, CHANNELS, rawData, 100);
+        result = stbi_write_jpg(path.c_str(), width, height, CHANNELS, rawData, 100);
         break;
     default:
         std::cout << "Unrecognized filetype: " << (int)type << "\n";
@@ -303,7 +304,16 @@ void Image::save(std::string path, filetype type)
 
     delete[] rawData;
 
-    std::cout << "Image written to " << path << "\n";
+    if (result)
+    {
+        std::cout << "Image written to " << path << "\n";
+        return true;
+    }
+    else
+    {
+        std::cout << "[ERROR] Could not write image to " << path << "\n";
+        return false;
+    }
 }
 
 void Image::freeData()

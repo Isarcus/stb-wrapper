@@ -58,7 +58,8 @@ public:
     void setAlpha(unsigned char a);
 
     // Save image at a given path, with a desired format (default PNG)
-    void save(std::string path, filetype type = filetype::PNG);
+    // Returns true upon successful save, false otherwise
+    bool save(std::string path, filetype type = filetype::PNG);
 
 private:
     int width, height;
