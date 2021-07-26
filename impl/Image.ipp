@@ -84,15 +84,33 @@ Image::Image(std::string path)
     STBI_FREE((void*)stb_data);
 }
 
-Image::Image(int width, int height)
-    : width(std::max(1, width))
-    , height(std::max(1, height))
+Image::Image(int width_in, int height_in)
+    : width(std::max(1, width_in))
+    , height(std::max(1, height_in))
 {
     data = new RGBA*[width];
 
     for (int x = 0; x < width; x++)
     {
         data[x] = new RGBA[height]{};
+    }
+}
+
+Image::Image(const void* data_in, int width_in, int height_in)
+    : Image(width_in, height_in)
+{
+    int index = 0;
+    for (int y = 0; y < height; y++)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            RGBA rgba;
+            rgba.R = static_cast<const char*>(data_in)[index++];
+            rgba.G = static_cast<const char*>(data_in)[index++];
+            rgba.B = static_cast<const char*>(data_in)[index++];
+
+            data[x][y] = rgba;
+        }
     }
 }
 

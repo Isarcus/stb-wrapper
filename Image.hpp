@@ -27,7 +27,8 @@ public:
     Image(const Image& img);
     Image(Image&& img);
     Image(std::string path);
-    Image(int width, int height);
+    Image(int width_in, int height_in);
+    Image(const void* data_in, int width_in, int height_in); // expects char rgb encoding, *for now*
     ~Image();
 
     Image& operator=(const Image& img);
