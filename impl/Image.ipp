@@ -96,7 +96,7 @@ Image::Image(int width_in, int height_in)
     }
 }
 
-Image::Image(const void* data_in, int width_in, int height_in)
+Image::Image(const void* data_in, int width_in, int height_in, bool flip_vertical)
     : Image(width_in, height_in)
 {
     int index = 0;
@@ -109,7 +109,8 @@ Image::Image(const void* data_in, int width_in, int height_in)
             rgba.G = static_cast<const char*>(data_in)[index++];
             rgba.B = static_cast<const char*>(data_in)[index++];
 
-            data[x][y] = rgba;
+            int y_adj = (flip_vertical) ? height - y - 1 : y;
+            data[x][y_adj] = rgba;
         }
     }
 }
