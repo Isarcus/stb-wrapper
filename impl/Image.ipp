@@ -295,7 +295,7 @@ void Image::setAlpha(unsigned char a)
     }
 }
 
-bool Image::save(std::string path, filetype type)
+bool Image::save(std::string path, filetype type) const
 {
     unsigned int rawDataSize = width * height * sizeof(char) * CHANNELS;
     unsigned char* rawData = new unsigned char[rawDataSize];
@@ -338,6 +338,16 @@ bool Image::save(std::string path, filetype type)
     {
         std::cout << "[ERROR] Could not write image to " << path << "\n";
         return false;
+    }
+}
+
+void Image::writeBinary(std::ostream& os) const
+{
+    LOOP_IMAGE
+    {
+        os.write((const char*)&(data[x][y].R), 1);
+        os.write((const char*)&(data[x][y].G), 1);
+        os.write((const char*)&(data[x][y].B), 1);
     }
 }
 

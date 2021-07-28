@@ -60,7 +60,10 @@ public:
 
     // Save image at a given path, with a desired format (default PNG)
     // Returns true upon successful save, false otherwise
-    bool save(std::string path, filetype type = filetype::PNG);
+    bool save(std::string path, filetype type = filetype::PNG) const;
+
+    // Writes image as binary data (TODO: add encoding parameter, e.g. "rgb8" or "bgr16")
+    void writeBinary(std::ostream& os) const;
 
 private:
     int width, height;
