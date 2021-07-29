@@ -341,13 +341,28 @@ bool Image::save(std::string path, filetype type) const
     }
 }
 
-void Image::writeBinary(std::ostream& os) const
+void Image::writeBinary(std::ostream& os, bool byRow) const
 {
-    LOOP_IMAGE
+    if (byRow)
     {
-        os.write((const char*)&(data[x][y].R), 1);
-        os.write((const char*)&(data[x][y].G), 1);
-        os.write((const char*)&(data[x][y].B), 1);
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                os.write((const char*)&(data[x][y].R), 1);
+                os.write((const char*)&(data[x][y].G), 1);
+                os.write((const char*)&(data[x][y].B), 1);
+            }
+        }
+    }
+    else
+    {
+        LOOP_IMAGE
+        {
+            os.write((const char*)&(data[x][y].R), 1);
+            os.write((const char*)&(data[x][y].G), 1);
+            os.write((const char*)&(data[x][y].B), 1);
+        }
     }
 }
 
