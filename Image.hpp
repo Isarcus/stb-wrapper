@@ -63,7 +63,7 @@ public:
     bool save(std::string path, filetype type = filetype::PNG) const;
 
     // Writes image as binary data (TODO: add encoding parameter, e.g. "rgb8" or "bgr16")
-    void writeBinary(std::ostream& os) const;
+    void writeBinary(std::ostream& os, bool byRow = true) const;
 
 private:
     int width, height;
