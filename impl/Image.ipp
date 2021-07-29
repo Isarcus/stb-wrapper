@@ -345,7 +345,7 @@ void Image::writeBinary(std::ostream& os, bool byRow) const
 {
     if (byRow)
     {
-        for (int y = height; y >= 0; y--)
+        for (int y = height - 1; y >= 0; y--)
         {
             for (int x = 0; x < width; x++)
             {
