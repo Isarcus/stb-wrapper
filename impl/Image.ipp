@@ -11,10 +11,7 @@
 
 #include "../image_math.hpp"
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb/stb_image_write.h"
-
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
 #include <cmath>
@@ -28,7 +25,7 @@ namespace zimg
 
 constexpr double PI = 3.141592653589793238462643383279502884197169399375105;
 
-Image::Image(const Image& img)
+inline Image::Image(const Image& img)
     : Image(img.width, img.height)
 {
     LOOP_IMAGE
@@ -37,7 +34,7 @@ Image::Image(const Image& img)
     }
 }
 
-Image::Image(Image&& img)
+inline Image::Image(Image&& img)
     : width(img.width)
     , height(img.height)
     , data(img.data)
@@ -47,7 +44,7 @@ Image::Image(Image&& img)
     img.height = 0;
 }
 
-Image::Image(std::string path)
+inline Image::Image(std::string path)
 {
     int channels = 0;
     stbi_set_flip_vertically_on_load(true);
@@ -84,7 +81,7 @@ Image::Image(std::string path)
     STBI_FREE((void*)stb_data);
 }
 
-Image::Image(int width_in, int height_in)
+inline Image::Image(int width_in, int height_in)
     : width(std::max(1, width_in))
     , height(std::max(1, height_in))
 {
@@ -96,7 +93,7 @@ Image::Image(int width_in, int height_in)
     }
 }
 
-Image::Image(const void* data_in, int width_in, int height_in, bool flip_vertical)
+inline Image::Image(const void* data_in, int width_in, int height_in, bool flip_vertical)
     : Image(width_in, height_in)
 {
     int index = 0;
@@ -115,12 +112,12 @@ Image::Image(const void* data_in, int width_in, int height_in, bool flip_vertica
     }
 }
 
-Image::~Image()
+inline Image::~Image()
 {
     freeData();
 }
 
-Image& Image::operator=(const Image& img)
+inline Image& Image::operator=(const Image& img)
 {
     if (width != img.width || height != img.height)
     {
@@ -135,7 +132,7 @@ Image& Image::operator=(const Image& img)
     return *this;
 }
 
-Image& Image::operator=(Image&& img)
+inline Image& Image::operator=(Image&& img)
 {
     freeData();
     data = img.data;
@@ -149,30 +146,30 @@ Image& Image::operator=(Image&& img)
     return *this;
 }
 
-int Image::getWidth()  const noexcept { return width; }
-int Image::getHeight() const noexcept { return height; }
+inline int Image::getWidth()  const noexcept { return width; }
+inline int Image::getHeight() const noexcept { return height; }
 
-bool Image::containsCoord(int x, int y) const noexcept
+inline bool Image::containsCoord(int x, int y) const noexcept
 {
     return x >= 0 && y >= 0 && x < width && y < height;
 }
 
-bool Image::containsCoord(double x, double y) const noexcept
+inline bool Image::containsCoord(double x, double y) const noexcept
 {
     return x >= 0 && y >= 0 && x < width && y < height;
 }
 
-RGBA* Image::operator[] (int x) noexcept
+inline RGBA* Image::operator[] (int x) noexcept
 {
     return data[x];
 }
 
-const RGBA* Image::operator[](int x) const noexcept
+inline const RGBA* Image::operator[](int x) const noexcept
 {
     return data[x];
 }
 
-RGBA& Image::at_safe(int x, int y) noexcept
+inline RGBA& Image::at_safe(int x, int y) noexcept
 {
     x = std::min(std::max(x, 0), width-1);
     y = std::min(std::max(y, 0), height-1);
@@ -180,7 +177,7 @@ RGBA& Image::at_safe(int x, int y) noexcept
     return data[x][y];
 }
 
-const RGBA& Image::at_safe(int x, int y) const noexcept
+inline const RGBA& Image::at_safe(int x, int y) const noexcept
 {
     x = std::min(std::max(x, 0), width-1);
     y = std::min(std::max(y, 0), height-1);
@@ -188,7 +185,7 @@ const RGBA& Image::at_safe(int x, int y) const noexcept
     return data[x][y];
 }
 
-RGBA& Image::at(int x, int y)
+inline RGBA& Image::at(int x, int y)
 {
     if (containsCoord(x, y))
         return data[x][y];
@@ -196,7 +193,7 @@ RGBA& Image::at(int x, int y)
         throw std::runtime_error("Out of bounds Image access!");
 }
 
-const RGBA& Image::at(int x, int y) const
+inline const RGBA& Image::at(int x, int y) const
 {
     if (containsCoord(x, y))
         return data[x][y];
@@ -204,7 +201,7 @@ const RGBA& Image::at(int x, int y) const
         throw std::runtime_error("Out of bounds Image access!");
 }
 
-RGBA Image::sample(double x, double y, math::EaseCurveRGBA sampler) const
+inline RGBA Image::sample(double x, double y, math::EaseCurveRGBA sampler) const
 {
     if (!containsCoord(x, y))
     {
@@ -232,7 +229,7 @@ RGBA Image::sample(double x, double y, math::EaseCurveRGBA sampler) const
     return sampler(c_y0, c_y1, y_itl);
 }
 
-void Image::resize(int newWidth, int newHeight, math::EaseCurveRGBA sampler)
+inline void Image::resize(int newWidth, int newHeight, math::EaseCurveRGBA sampler)
 {
     if (newWidth < 1 || newHeight < 1)
     {
@@ -257,7 +254,7 @@ void Image::resize(int newWidth, int newHeight, math::EaseCurveRGBA sampler)
     *this = img_new;
 }
 
-void Image::fillColor(int x1, int y1, int x2, int y2, RGBA color) noexcept
+inline void Image::fillColor(int x1, int y1, int x2, int y2, RGBA color) noexcept
 {
     int xStep = ((x2 - x1) > 0) - ((x2 - x1) < 0);
     int yStep = ((y2 - y1) > 0) - ((y2 - y1) < 0);
@@ -275,7 +272,7 @@ void Image::fillColor(int x1, int y1, int x2, int y2, RGBA color) noexcept
     }
 }
 
-void Image::makeTransparent(bool(*condition)(const RGBA& rgba))
+inline void Image::makeTransparent(bool(*condition)(const RGBA& rgba))
 {
     LOOP_IMAGE
     {
@@ -287,7 +284,7 @@ void Image::makeTransparent(bool(*condition)(const RGBA& rgba))
     }
 }
 
-void Image::setAlpha(unsigned char a)
+inline void Image::setAlpha(unsigned char a)
 {
     LOOP_IMAGE
     {
@@ -295,7 +292,7 @@ void Image::setAlpha(unsigned char a)
     }
 }
 
-bool Image::save(std::string path, filetype type) const
+inline bool Image::save(std::string path, filetype type) const
 {
     unsigned int rawDataSize = width * height * sizeof(char) * CHANNELS;
     unsigned char* rawData = new unsigned char[rawDataSize];
@@ -341,7 +338,7 @@ bool Image::save(std::string path, filetype type) const
     }
 }
 
-void Image::writeBinary(std::ostream& os, bool byRow) const
+inline void Image::writeBinary(std::ostream& os, bool byRow) const
 {
     if (byRow)
     {
@@ -366,7 +363,7 @@ void Image::writeBinary(std::ostream& os, bool byRow) const
     }
 }
 
-void Image::freeData()
+inline void Image::freeData()
 {
     if (data)
     {
@@ -380,8 +377,6 @@ void Image::freeData()
     }
 }
 
-#undef STB_IMAGE_IMPLEMENTATION
-#undef STB_IMAGE_WRITE_IMPLEMENTATION
 #undef LOOP_IMAGE
 
 } // namespace zimg

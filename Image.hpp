@@ -83,8 +83,6 @@ private:
 
 } // namespace zimg
 
-#ifdef ISARCUS_IMAGE_IMPLEMENTATION
 #include "impl/Image.ipp"
-#endif
 
 #endif // ifndef ISARCUS_IMAGE_HPP
