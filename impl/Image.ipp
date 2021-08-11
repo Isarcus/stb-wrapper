@@ -134,15 +134,17 @@ inline Image& Image::operator=(const Image& img)
 
 inline Image& Image::operator=(Image&& img)
 {
-    freeData();
-    data = img.data;
-    width = img.width;
-    height = img.height;
+    if (this != &img)
+    {
+        freeData();
+        data = img.data;
+        width = img.width;
+        height = img.height;
 
-    img.data = nullptr;
-    img.width = 0;
-    img.height = 0;
-
+        img.data = nullptr;
+        img.width = 0;
+        img.height = 0;
+    }
     return *this;
 }
 
